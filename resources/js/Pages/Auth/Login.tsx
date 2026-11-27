@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { AlertCircle, KeyRound, Shield } from 'lucide-react';
+import { AlertCircle, KeyRound } from 'lucide-react';
 import { type FormEvent } from 'react';
 
 interface LoginProps {
@@ -36,10 +36,12 @@ export default function Login({ requiresPasscode }: LoginProps) {
                     aria-labelledby="login-heading"
                     className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 sm:p-8 shadow-sm"
                 >
-                    <div className="flex items-start gap-3 pb-6 border-b border-laz-gold/25">
-                        <div className="w-10 h-10 rounded-[var(--radius-button)] bg-laz-forest text-laz-gold flex items-center justify-center shrink-0">
-                            <Shield className="w-5 h-5" aria-hidden="true" />
-                        </div>
+                    <div className="flex items-start gap-3.5 pb-6 border-b border-laz-gold/25">
+                        <img
+                            src="/images/logo-laz.png"
+                            alt="Logo LAZ Amanah Madani"
+                            className="w-16 h-16 object-contain shrink-0"
+                        />
                         <div>
                             <h1 id="login-heading" className="text-xl font-bold tracking-tight text-laz-forest">
                                 Portal Operasional Staf

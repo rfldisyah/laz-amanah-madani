@@ -207,13 +207,20 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
             >
                 <div className="px-4 py-5 border-b border-laz-gold/20 flex items-center justify-between gap-2">
                     {!collapsed && (
-                        <div className="min-w-0">
-                            <p className="text-xs font-medium tracking-wider uppercase text-laz-gold truncate">
-                                LAZ Amanah Madani
-                            </p>
-                            <h1 className="mt-0.5 text-base font-semibold tracking-tight text-laz-surface truncate">
-                                Kota Pekanbaru
-                            </h1>
+                        <div className="flex items-center gap-3 min-w-0">
+                            <img
+                                src="/images/logo-laz.png"
+                                alt="Logo LAZ Amanah Madani"
+                                className="h-12 w-12 rounded-xl bg-laz-cream p-1 object-contain shrink-0"
+                            />
+                            <div className="min-w-0">
+                                <p className="text-xs font-medium tracking-wider uppercase text-laz-gold truncate">
+                                    LAZ Amanah Madani
+                                </p>
+                                <h1 className="mt-0.5 text-base font-semibold tracking-tight text-laz-surface truncate">
+                                    Kota Pekanbaru
+                                </h1>
+                            </div>
                         </div>
                     )}
 
@@ -274,14 +281,21 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                         aria-label="Menu Mobile"
                         className="relative w-72 max-w-[85vw] bg-laz-forest text-laz-cream flex flex-col h-full shadow-xl"
                     >
-                        <div className="px-5 py-4 border-b border-laz-gold/20 flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-medium uppercase tracking-wider text-laz-gold">
-                                    LAZ Amanah Madani
-                                </p>
-                                <p className="text-base font-semibold text-laz-surface">
-                                    Kota Pekanbaru
-                                </p>
+                        <div className="px-5 py-4 border-b border-laz-gold/20 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <img
+                                    src="/images/logo-laz.png"
+                                    alt="Logo LAZ Amanah Madani"
+                                    className="h-11 w-11 rounded-xl bg-laz-cream p-1 object-contain shrink-0"
+                                />
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium uppercase tracking-wider text-laz-gold truncate">
+                                        LAZ Amanah Madani
+                                    </p>
+                                    <p className="text-base font-semibold text-laz-surface truncate">
+                                        Kota Pekanbaru
+                                    </p>
+                                </div>
                             </div>
                             <button
                                 type="button"

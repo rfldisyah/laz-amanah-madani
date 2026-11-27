@@ -84,14 +84,21 @@ export default function PublicLayout({ title, children }: PublicLayoutProps) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
                     <Link
                         href="/"
-                        className="flex flex-col leading-tight focus-visible:outline-2 focus-visible:outline-laz-forest rounded-sm"
+                        className="flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-laz-forest rounded-sm"
                     >
-                        <span className="text-xs font-semibold uppercase tracking-widest text-laz-sage">
-                            LAZ Amanah Madani
-                        </span>
-                        <span className="text-base sm:text-lg font-bold tracking-tight text-laz-forest">
-                            Kota Pekanbaru
-                        </span>
+                        <img
+                            src="/images/logo-laz.png"
+                            alt="Logo LAZ Amanah Madani"
+                            className="h-12 w-12 object-contain shrink-0"
+                        />
+                        <div className="flex flex-col leading-tight">
+                            <span className="text-xs font-semibold uppercase tracking-widest text-laz-sage">
+                                LAZ Amanah Madani
+                            </span>
+                            <span className="text-base sm:text-lg font-bold tracking-tight text-laz-forest">
+                                Kota Pekanbaru
+                            </span>
+                        </div>
                     </Link>
 
                     <nav aria-label="Navigasi Publik" className="hidden md:flex items-center gap-8">
@@ -184,13 +191,20 @@ export default function PublicLayout({ title, children }: PublicLayoutProps) {
 
             <footer className="bg-laz-forest text-laz-cream border-t border-laz-gold/25">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div>
-                        <p className="text-xs font-semibold uppercase tracking-widest text-laz-gold">
-                            LAZ Amanah Madani Kota Pekanbaru
-                        </p>
-                        <p className="mt-2 text-sm text-laz-cream/80 max-w-md">
-                            Pengelolaan dana Zakat, Infak, Sedekah, dan Wakaf dengan pemisahan rekening akad syariah serta pelaporan publik yang menjaga martabat mustahik.
-                        </p>
+                    <div className="flex items-start gap-3.5">
+                        <img
+                            src="/images/logo-laz.png"
+                            alt="Logo LAZ Amanah Madani"
+                            className="h-14 w-14 rounded-2xl bg-laz-cream p-1.5 object-contain shrink-0"
+                        />
+                        <div>
+                            <p className="text-xs font-semibold uppercase tracking-widest text-laz-gold">
+                                LAZ Amanah Madani Kota Pekanbaru
+                            </p>
+                            <p className="mt-1.5 text-sm text-laz-cream/80 max-w-md">
+                                Pengelolaan dana Zakat, Infak, Sedekah, dan Wakaf dengan pemisahan rekening akad syariah serta pelaporan publik yang menjaga martabat mustahik.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-6 text-sm">
