@@ -1,9 +1,76 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "../../storage/framework/views/*.php";
+@source "../views/**/*.blade.php";
+@source "../js/**/*.tsx";
+@source "../js/**/*.ts";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-laz-forest: #1E3B2F;
+    --color-laz-forest-hover: #152B22;
+    --color-laz-sage: #7F8C6A;
+    --color-laz-gold: #C8B48A;
+    --color-laz-cream: #F5F0E6;
+    --color-laz-surface: #FFFFFF;
+    --color-laz-muted: #5C6B61;
+    --color-laz-danger: #9E3B33;
+    --color-laz-warning: #B8863B;
+
+    --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+    --radius-card: 1rem;
+    --radius-button: 0.75rem;
+    --radius-badge: 9999px;
+}
+
+@layer base {
+    html {
+        background-color: var(--color-laz-cream);
+        color: var(--color-laz-forest);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+        background-color: var(--color-laz-gold);
+        color: var(--color-laz-forest);
+    }
+
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]),
+    [role="tab"]:not([aria-disabled="true"]),
+    [role="switch"]:not([aria-disabled="true"]) {
+        cursor: pointer;
+    }
+
+    button:disabled,
+    select:disabled,
+    input:disabled,
+    [aria-disabled="true"] {
+        cursor: not-allowed;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-laz-forest);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }
