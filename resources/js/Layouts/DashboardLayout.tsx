@@ -1,7 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     BookOpen,
-    CheckSquare,
     ChevronLeft,
     ChevronRight,
     ClipboardCheck,
@@ -61,8 +60,7 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
             ];
         case 'manajer_penyaluran':
             return [
-                { id: 'setujui-sk', label: 'Persetujuan SK', icon: CheckSquare, comingSoon: true },
-                { id: 'cairkan-sk', label: 'Pencairan Dana', icon: FileCheck2, comingSoon: true },
+                { id: 'otorisasi-sk', label: 'Otorisasi & Pencairan', href: '/penyaluran/otorisasi', icon: FileCheck2 },
             ];
         case 'admin_sistem':
             return [
@@ -70,6 +68,7 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
                 { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
                 { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
                 { id: 'draft-sk', label: 'Draft SK Penyaluran', href: '/penyaluran', icon: FileSpreadsheet },
+                { id: 'otorisasi-sk', label: 'Otorisasi & Pencairan', href: '/penyaluran/otorisasi', icon: FileCheck2 },
                 { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
                 { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
                 { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },

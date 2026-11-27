@@ -7,6 +7,7 @@ use App\Models\Mustahik;
 use App\Models\Penyaluran;
 use App\Models\Program;
 use App\Models\RekeningLembaga;
+use App\Models\SaldoDana;
 use App\Support\DatabaseErrorHelper;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -202,6 +203,105 @@ class PenyaluranController extends Controller
         return back()->with(
             'success',
             "Penerima {$mustahik->nama_lengkap} berhasil ditambahkan ke SK {$penyaluran->nomor_sk_salur}.",
+        );
+    }
+
+    public function approvalIndex(Request $request): Response
+    {
+        $search = trim((string) $request->query('search', ''));
+        $status = (string) $request->query('status', 'SEMUA');
+
+        $penyaluran = Penyaluran::query()
+            ->with([
+                'program:id_program,id_jenis_dana,kode_program,nama_program,status_program',
+                'jenisDana:id_jenis_dana,kode_dana,nama_dana,kategori_induk',
+                'rekening:id_rekening,nama_bank,nomor_rekening,atas_nama,kategori_induk',
+                'pengaju:id_pengguna,nama_lengkap',
+                'penyetuju:id_pengguna,nama_lengkap',
+                'details' => function ($query): void {
+                    $query->with([
+                        'mustahik:id_mustahik,nik,nama_lengkap,alamat_kecamatan',
+                        'asnaf:id_asnaf,kode_asnaf,nama_asnaf',
+                    ])->orderBy('id_detail_salur');
+                },
+            ])
+            ->when($search !== '', function ($query) use ($search): void {
+                $query->where(function ($sub) use ($search): void {
+                    $sub->where('nomor_sk_salur', 'like', "%{$search}%")
+                        ->orWhereHas('program', function ($prog) use ($search): void {
+                            $prog->where('nama_program', 'like', "%{$search}%")
+                                ->orWhere('kode_program', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when(in_array($status, ['DRAFT', 'DISETUJUI', 'DISALURKAN', 'DITOLAK'], true), function ($query) use ($status): void {
+                $query->where('status_penyaluran', $status);
+            })
+            ->orderByRaw("FIELD(status_penyaluran, 'DRAFT', 'DISETUJUI', 'DISALURKAN', 'DITOLAK')")
+            ->orderByDesc('id_penyaluran')
+            ->paginate(12)
+            ->withQueryString();
+
+        $saldoMap = SaldoDana::query()
+            ->get(['id_jenis_dana', 'saldo_aktif'])
+            ->mapWithKeys(fn (SaldoDana $s): array => [$s->id_jenis_dana => (string) $s->saldo_aktif]);
+
+        $ringkasanStatus = [
+            'draft' => Penyaluran::query()->where('status_penyaluran', 'DRAFT')->count(),
+            'disetujui' => Penyaluran::query()->where('status_penyaluran', 'DISETUJUI')->count(),
+            'disalurkan' => Penyaluran::query()->where('status_penyaluran', 'DISALURKAN')->count(),
+        ];
+
+        return Inertia::render('Penyaluran/Approval', [
+            'penyaluran' => $penyaluran,
+            'saldoMap' => $saldoMap,
+            'ringkasanStatus' => $ringkasanStatus,
+            'filters' => [
+                'search' => $search,
+                'status' => $status,
+            ],
+        ]);
+    }
+
+    public function approve(Request $request, Penyaluran $penyaluran): RedirectResponse
+    {
+        $idPenyetuju = (int) $request->user()->id_pengguna;
+
+        try {
+            DB::statement(
+                'CALL sp_setujui_penyaluran(?, ?)',
+                [(int) $penyaluran->id_penyaluran, $idPenyetuju],
+            );
+        } catch (QueryException $exception) {
+            return back()->withErrors([
+                'db_error' => DatabaseErrorHelper::extractMessage($exception),
+            ]);
+        }
+
+        return back()->with(
+            'success',
+            "SK {$penyaluran->nomor_sk_salur} berhasil disahkan (DISETUJUI) melalui sp_setujui_penyaluran.",
+        );
+    }
+
+    public function cairkan(Request $request, Penyaluran $penyaluran): RedirectResponse
+    {
+        $idEksekutor = (int) $request->user()->id_pengguna;
+
+        try {
+            DB::statement(
+                'CALL sp_cairkan_penyaluran(?, ?)',
+                [(int) $penyaluran->id_penyaluran, $idEksekutor],
+            );
+        } catch (QueryException $exception) {
+            return back()->withErrors([
+                'db_error' => DatabaseErrorHelper::extractMessage($exception),
+            ]);
+        }
+
+        return back()->with(
+            'success',
+            "Dana SK {$penyaluran->nomor_sk_salur} berhasil dicairkan (DISALURKAN) melalui sp_cairkan_penyaluran.",
         );
     }
 

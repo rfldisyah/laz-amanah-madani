@@ -41,3 +41,9 @@ Route::middleware(['auth', 'laz.role:petugas_penghimpunan,verifikator,admin_sist
     Route::post('/penyaluran', [PenyaluranController::class, 'store'])->name('penyaluran.store');
     Route::post('/penyaluran/{penyaluran}/detail', [PenyaluranController::class, 'addDetail'])->name('penyaluran.detail.store');
 });
+
+Route::middleware(['auth', 'laz.role:manajer_penyaluran,admin_sistem'])->group(function (): void {
+    Route::get('/penyaluran/otorisasi', [PenyaluranController::class, 'approvalIndex'])->name('penyaluran.approval');
+    Route::post('/penyaluran/{penyaluran}/setujui', [PenyaluranController::class, 'approve'])->name('penyaluran.approve');
+    Route::post('/penyaluran/{penyaluran}/cairkan', [PenyaluranController::class, 'cairkan'])->name('penyaluran.cairkan');
+});
