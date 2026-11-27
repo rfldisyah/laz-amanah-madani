@@ -64,6 +64,26 @@ return [
             ]) : [],
         ],
 
+        // Read-only connection for public transparency views (usr_laz_laporan).
+        'mysql_publik' => [
+            'driver' => 'mysql',
+            'host' => env('DB_PUBLIK_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_PUBLIK_PORT', env('DB_PORT', '3306')),
+            'database' => env('DB_PUBLIK_DATABASE', env('DB_DATABASE', 'db_laz_amanah_madani')),
+            'username' => env('DB_PUBLIK_USERNAME', 'usr_laz_laporan'),
+            'password' => env('DB_PUBLIK_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
