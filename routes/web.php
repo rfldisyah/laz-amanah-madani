@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MustahikVerifikasiController;
 use App\Http\Controllers\PenghimpunanController;
+use App\Http\Controllers\PenyaluranController;
 use App\Http\Controllers\Public\LandingTransparansiController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,10 @@ Route::middleware(['auth', 'laz.role:verifikator,admin_sistem'])->group(function
     Route::get('/mustahik', [MustahikVerifikasiController::class, 'index'])->name('mustahik.index');
     Route::post('/mustahik', [MustahikVerifikasiController::class, 'store'])->name('mustahik.store');
     Route::post('/mustahik/{mustahik}/verifikasi', [MustahikVerifikasiController::class, 'verify'])->name('mustahik.verify');
+});
+
+Route::middleware(['auth', 'laz.role:petugas_penghimpunan,verifikator,admin_sistem'])->group(function (): void {
+    Route::get('/penyaluran', [PenyaluranController::class, 'index'])->name('penyaluran.index');
+    Route::post('/penyaluran', [PenyaluranController::class, 'store'])->name('penyaluran.store');
+    Route::post('/penyaluran/{penyaluran}/detail', [PenyaluranController::class, 'addDetail'])->name('penyaluran.detail.store');
 });

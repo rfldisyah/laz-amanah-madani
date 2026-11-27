@@ -52,11 +52,12 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
             return [
                 { id: 'muzaki', label: 'Data Muzaki', href: '/muzaki', icon: Users },
                 { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
-                { id: 'draft-sk', label: 'Draft SK Penyaluran', icon: FileSpreadsheet, comingSoon: true },
+                { id: 'draft-sk', label: 'Draft SK Penyaluran', href: '/penyaluran', icon: FileSpreadsheet },
             ];
         case 'verifikator':
             return [
                 { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
+                { id: 'draft-sk', label: 'Draft SK Penyaluran', href: '/penyaluran', icon: FileSpreadsheet },
             ];
         case 'manajer_penyaluran':
             return [
@@ -68,6 +69,7 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
                 { id: 'muzaki', label: 'Data Muzaki', href: '/muzaki', icon: Users },
                 { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
                 { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
+                { id: 'draft-sk', label: 'Draft SK Penyaluran', href: '/penyaluran', icon: FileSpreadsheet },
                 { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
                 { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
                 { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },
