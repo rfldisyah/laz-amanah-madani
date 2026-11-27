@@ -169,8 +169,8 @@ export default function PenyaluranApproval({
     };
 
     return (
-        <DashboardLayout title="Otorisasi & Pencairan SK">
-            <Head title="Otorisasi & Pencairan SK" />
+        <DashboardLayout title="Otorisasi SK">
+            <Head title="Otorisasi SK" />
 
             <div className="space-y-6">
                 <div>

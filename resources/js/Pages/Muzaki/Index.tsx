@@ -95,7 +95,7 @@ export default function MuzakiIndex({ muzaki, filters }: MuzakiIndexProps) {
     };
 
     return (
-        <DashboardLayout title="Manajemen Data Muzaki">
+        <DashboardLayout title="Data Muzaki">
             <div className="space-y-6">
                 {flash.success && (
                     <div

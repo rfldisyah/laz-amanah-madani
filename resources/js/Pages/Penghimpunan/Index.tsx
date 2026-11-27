@@ -99,7 +99,7 @@ export default function PenghimpunanIndex({
     const dbError = pageErrors.db_error;
 
     return (
-        <DashboardLayout title="Catat Penghimpunan ZIS">
+        <DashboardLayout title="Penghimpunan">
             <div className="space-y-8">
                 {flash.success && (
                     <div

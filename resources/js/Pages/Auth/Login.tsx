@@ -40,7 +40,7 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-laz-cream text-laz-forest flex flex-col justify-between px-4 py-6 sm:px-6 lg:px-8">
-            <Head title="Masuk Staf Internal" />
+            <Head title="Login Staf" />
 
             <header className="max-w-5xl w-full mx-auto pt-2 flex items-center justify-between gap-4">
                 <Link

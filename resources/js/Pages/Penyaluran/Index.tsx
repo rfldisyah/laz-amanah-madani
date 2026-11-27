@@ -729,8 +729,8 @@ export default function PenyaluranIndex({
     };
 
     return (
-        <DashboardLayout title="Draft SK Penyaluran">
-            <Head title="Draft SK Penyaluran" />
+        <DashboardLayout title="Draft SK">
+            <Head title="Draft SK" />
 
             <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">

@@ -57,7 +57,7 @@ export default function DashboardIndex({
               : 'AMAN';
 
     return (
-        <DashboardLayout title="Ringkasan Eksekutif & Kantong Saldo">
+        <DashboardLayout title="Dashboard">
             <div className="space-y-8">
                 {/* Identitas Staf & Antrian Operasional Nyata */}
                 <section

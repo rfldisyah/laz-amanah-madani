@@ -259,8 +259,8 @@ export default function MasterData({
     };
 
     return (
-        <DashboardLayout title="Master Data Lembaga">
-            <Head title="Master Data Lembaga" />
+        <DashboardLayout title="Master Data">
+            <Head title="Master Data" />
 
             <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">

@@ -68,8 +68,8 @@ export default function BukuBesar({
     };
 
     return (
-        <DashboardLayout title="Buku Besar Terpartisi">
-            <Head title="Buku Besar Terpartisi" />
+        <DashboardLayout title="Buku Besar">
+            <Head title="Buku Besar" />
 
             <div className="space-y-6">
                 <div>

@@ -598,8 +598,8 @@ export default function MustahikIndex({
     };
 
     return (
-        <DashboardLayout title="Mustahik & Survei">
-            <Head title="Mustahik & Survei" />
+        <DashboardLayout title="Mustahik">
+            <Head title="Mustahik" />
 
             <div className="space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">

@@ -232,7 +232,7 @@ export default function Home({
     );
 
     return (
-        <PublicLayout title="Portal Transparansi ZIS Kota Pekanbaru">
+        <PublicLayout title="Portal Publik">
             <div ref={containerRef}>
                 {/* Hero Section */}
                 <section className="py-16 sm:py-24 border-b border-laz-gold/30">
