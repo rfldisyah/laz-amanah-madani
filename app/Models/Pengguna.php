@@ -15,9 +15,14 @@ class Pengguna extends Authenticatable
     protected $fillable = [
         'nama_lengkap',
         'username',
+        'password',
         'peran',
         'jabatan',
         'is_aktif',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     protected function casts(): array
@@ -25,6 +30,7 @@ class Pengguna extends Authenticatable
         return [
             'id_pengguna' => 'integer',
             'is_aktif' => 'boolean',
+            'password' => 'hashed',
         ];
     }
 

@@ -15,10 +15,11 @@ class FoundationAuthTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    public function test_active_staff_can_login_and_access_dashboard(): void
+    public function test_active_staff_can_login_with_valid_password_and_access_dashboard(): void
     {
         $response = $this->post('/login', [
             'username' => 'ahmad.admin',
+            'password' => 'ahmad123',
         ]);
 
         $response->assertRedirect('/dashboard');
@@ -28,10 +29,23 @@ class FoundationAuthTest extends TestCase
         $dashboard->assertOk();
     }
 
+    public function test_wrong_password_is_rejected_on_login(): void
+    {
+        $response = $this->from('/login')->post('/login', [
+            'username' => 'ahmad.admin',
+            'password' => 'salah123',
+        ]);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors('password');
+        $this->assertGuest();
+    }
+
     public function test_unknown_username_is_rejected_on_login(): void
     {
         $response = $this->from('/login')->post('/login', [
             'username' => 'tidak.ada.user',
+            'password' => 'rahasia123',
         ]);
 
         $response->assertRedirect('/login');

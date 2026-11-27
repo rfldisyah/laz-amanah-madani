@@ -7,6 +7,7 @@ use App\Models\Pengguna;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,21 +15,17 @@ class LoginController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Auth/Login', [
-            'requiresPasscode' => filled(env('LAZ_STAFF_PASSCODE')),
-        ]);
+        return Inertia::render('Auth/Login');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $passcode = env('LAZ_STAFF_PASSCODE');
-
         $validated = $request->validate([
             'username' => ['required', 'string', 'max:50'],
-            'kode_akses' => [filled($passcode) ? 'required' : 'nullable', 'string'],
+            'password' => ['required', 'string'],
         ], [
             'username.required' => 'Username staf wajib diisi.',
-            'kode_akses.required' => 'Kode akses internal wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
         $pengguna = Pengguna::query()
@@ -47,9 +44,9 @@ class LoginController extends Controller
             ])->onlyInput('username');
         }
 
-        if (filled($passcode) && ! hash_equals((string) $passcode, (string) ($validated['kode_akses'] ?? ''))) {
+        if (! $pengguna->password || ! Hash::check($validated['password'], (string) $pengguna->password)) {
             return back()->withErrors([
-                'kode_akses' => 'Kode akses internal tidak sesuai.',
+                'password' => 'Password yang Anda masukkan tidak sesuai.',
             ])->onlyInput('username');
         }
 

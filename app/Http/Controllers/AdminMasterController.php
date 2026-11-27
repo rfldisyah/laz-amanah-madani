@@ -154,13 +154,23 @@ class AdminMasterController extends Controller
         $validated = $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:100'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:pengguna,username'],
+            'password' => ['nullable', 'string', 'min:6', 'max:100'],
             'peran' => ['required', Rule::in(['admin_sistem', 'verifikator', 'petugas_penghimpunan', 'manajer_penyaluran'])],
             'jabatan' => ['required', 'string', 'max:80'],
         ]);
 
+        $prefix = strtolower((string) strtok($validated['username'], '.'));
+        $rawPassword = filled($validated['password'] ?? null)
+            ? (string) $validated['password']
+            : "{$prefix}123";
+
         try {
             Pengguna::query()->create([
-                ...$validated,
+                'nama_lengkap' => $validated['nama_lengkap'],
+                'username' => $validated['username'],
+                'password' => $rawPassword,
+                'peran' => $validated['peran'],
+                'jabatan' => $validated['jabatan'],
                 'is_aktif' => true,
             ]);
         } catch (QueryException $exception) {

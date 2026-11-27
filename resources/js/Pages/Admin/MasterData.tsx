@@ -194,11 +194,13 @@ export default function MasterData({
     const penggunaForm = useForm<{
         nama_lengkap: string;
         username: string;
+        password: string;
         peran: PeranPengguna;
         jabatan: string;
     }>({
         nama_lengkap: '',
         username: '',
+        password: '',
         peran: 'petugas_penghimpunan',
         jabatan: '',
     });
@@ -1136,6 +1138,29 @@ export default function MasterData({
                         {penggunaForm.errors.username && (
                             <p className="mt-1 text-xs text-laz-danger">
                                 {penggunaForm.errors.username}
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="usr_password"
+                            className="mb-1.5 block text-sm font-semibold text-laz-forest"
+                        >
+                            Password Awal (opsional)
+                        </label>
+                        <input
+                            id="usr_password"
+                            type="password"
+                            value={penggunaForm.data.password}
+                            onChange={(e) =>
+                                penggunaForm.setData('password', e.target.value)
+                            }
+                            placeholder="Kosongkan untuk default <nama>123"
+                            className="min-h-11 w-full rounded-[var(--radius-button)] border border-laz-gold/45 bg-laz-cream/50 px-4 py-2 text-sm text-laz-forest"
+                        />
+                        {penggunaForm.errors.password && (
+                            <p className="mt-1 text-xs text-laz-danger">
+                                {penggunaForm.errors.password}
                             </p>
                         )}
                     </div>
