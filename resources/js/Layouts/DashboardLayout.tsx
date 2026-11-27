@@ -50,8 +50,8 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
     switch (peran) {
         case 'petugas_penghimpunan':
             return [
-                { id: 'muzaki', label: 'Data Muzaki', icon: Users, comingSoon: true },
-                { id: 'penghimpunan', label: 'Catat Penghimpunan', icon: HandCoins, comingSoon: true },
+                { id: 'muzaki', label: 'Data Muzaki', href: '/muzaki', icon: Users },
+                { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
                 { id: 'draft-sk', label: 'Draft SK Penyaluran', icon: FileSpreadsheet, comingSoon: true },
             ];
         case 'verifikator':
@@ -66,6 +66,8 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
             ];
         case 'admin_sistem':
             return [
+                { id: 'muzaki', label: 'Data Muzaki', href: '/muzaki', icon: Users },
+                { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
                 { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
                 { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
                 { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },

@@ -242,6 +242,16 @@ export interface RingkasanOperasional {
     program_aktif: number;
 }
 
+export interface Paginator<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+}
+
 export interface SharedPageProps {
     [key: string]: unknown;
     auth: {
