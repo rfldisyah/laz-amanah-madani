@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MustahikVerifikasiController;
 use App\Http\Controllers\PenghimpunanController;
 use App\Http\Controllers\Public\LandingTransparansiController;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,10 @@ Route::middleware(['auth', 'laz.role:petugas_penghimpunan,admin_sistem'])->group
 
     Route::get('/penghimpunan', [PenghimpunanController::class, 'index'])->name('penghimpunan.index');
     Route::post('/penghimpunan', [PenghimpunanController::class, 'store'])->name('penghimpunan.store');
+});
+
+Route::middleware(['auth', 'laz.role:verifikator,admin_sistem'])->group(function (): void {
+    Route::get('/mustahik', [MustahikVerifikasiController::class, 'index'])->name('mustahik.index');
+    Route::post('/mustahik', [MustahikVerifikasiController::class, 'store'])->name('mustahik.store');
+    Route::post('/mustahik/{mustahik}/verifikasi', [MustahikVerifikasiController::class, 'verify'])->name('mustahik.verify');
 });

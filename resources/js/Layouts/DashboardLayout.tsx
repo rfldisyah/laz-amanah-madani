@@ -56,8 +56,7 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
             ];
         case 'verifikator':
             return [
-                { id: 'mustahik', label: 'Calon Mustahik', icon: Users, comingSoon: true },
-                { id: 'survei', label: 'Berita Acara Survei', icon: ClipboardCheck, comingSoon: true },
+                { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
             ];
         case 'manajer_penyaluran':
             return [
@@ -68,6 +67,7 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
             return [
                 { id: 'muzaki', label: 'Data Muzaki', href: '/muzaki', icon: Users },
                 { id: 'penghimpunan', label: 'Catat Penghimpunan', href: '/penghimpunan', icon: HandCoins },
+                { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
                 { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
                 { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
                 { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },
