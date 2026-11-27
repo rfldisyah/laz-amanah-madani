@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminMasterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MustahikVerifikasiController;
@@ -46,4 +47,18 @@ Route::middleware(['auth', 'laz.role:manajer_penyaluran,admin_sistem'])->group(f
     Route::get('/penyaluran/otorisasi', [PenyaluranController::class, 'approvalIndex'])->name('penyaluran.approval');
     Route::post('/penyaluran/{penyaluran}/setujui', [PenyaluranController::class, 'approve'])->name('penyaluran.approve');
     Route::post('/penyaluran/{penyaluran}/cairkan', [PenyaluranController::class, 'cairkan'])->name('penyaluran.cairkan');
+});
+
+Route::middleware(['auth', 'laz.role:admin_sistem'])->group(function (): void {
+    Route::get('/admin/master', [AdminMasterController::class, 'masterIndex'])->name('admin.master.index');
+    Route::post('/admin/program', [AdminMasterController::class, 'programStore'])->name('admin.program.store');
+    Route::put('/admin/program/{program}', [AdminMasterController::class, 'programUpdate'])->name('admin.program.update');
+    Route::post('/admin/rekening', [AdminMasterController::class, 'rekeningStore'])->name('admin.rekening.store');
+    Route::patch('/admin/rekening/{rekening}/toggle', [AdminMasterController::class, 'rekeningToggle'])->name('admin.rekening.toggle');
+    Route::patch('/admin/jenis-dana/{jenisDana}/toggle', [AdminMasterController::class, 'jenisDanaToggle'])->name('admin.jenis-dana.toggle');
+    Route::post('/admin/pengguna', [AdminMasterController::class, 'penggunaStore'])->name('admin.pengguna.store');
+    Route::patch('/admin/pengguna/{pengguna}/toggle', [AdminMasterController::class, 'penggunaToggle'])->name('admin.pengguna.toggle');
+
+    Route::get('/admin/mutasi', [AdminMasterController::class, 'mutasiIndex'])->name('admin.mutasi.index');
+    Route::get('/admin/audit', [AdminMasterController::class, 'auditIndex'])->name('admin.audit.index');
 });

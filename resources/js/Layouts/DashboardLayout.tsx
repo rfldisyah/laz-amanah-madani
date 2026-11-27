@@ -69,9 +69,9 @@ function getRoleNavItems(peran: PeranPengguna): NavItem[] {
                 { id: 'mustahik', label: 'Mustahik & Survei', href: '/mustahik', icon: ClipboardCheck },
                 { id: 'draft-sk', label: 'Draft SK Penyaluran', href: '/penyaluran', icon: FileSpreadsheet },
                 { id: 'otorisasi-sk', label: 'Otorisasi & Pencairan', href: '/penyaluran/otorisasi', icon: FileCheck2 },
-                { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
-                { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
-                { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },
+                { id: 'master', label: 'Master Data Lembaga', href: '/admin/master', icon: Database },
+                { id: 'mutasi', label: 'Buku Besar Terpartisi', href: '/admin/mutasi', icon: BookOpen },
+                { id: 'audit', label: 'Audit Trail', href: '/admin/audit', icon: History },
             ];
     }
 }
