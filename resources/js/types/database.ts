@@ -221,6 +221,27 @@ export interface RekapIndukDana {
     saldo_tersedia: string;
 }
 
+export interface KantongSaldoItem {
+    id_saldo: number;
+    id_jenis_dana: number;
+    kode_dana: string;
+    nama_dana: string;
+    kategori_induk: KategoriInduk;
+    is_terikat: boolean;
+    saldo_aktif: string;
+    total_masuk: string;
+    total_keluar: string;
+    updated_at: string;
+}
+
+export interface RingkasanOperasional {
+    mustahik_belum_verifikasi: number;
+    mustahik_layak: number;
+    sk_draft: number;
+    sk_disetujui: number;
+    program_aktif: number;
+}
+
 export interface SharedPageProps {
     [key: string]: unknown;
     auth: {

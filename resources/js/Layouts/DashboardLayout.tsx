@@ -1,11 +1,42 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { LogOut, Menu, ShieldCheck, Wallet, X } from 'lucide-react';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+    BookOpen,
+    CheckSquare,
+    ChevronLeft,
+    ChevronRight,
+    ClipboardCheck,
+    Database,
+    ExternalLink,
+    FileCheck2,
+    FileSpreadsheet,
+    HandCoins,
+    History,
+    LogOut,
+    Menu,
+    ShieldCheck,
+    Users,
+    Wallet,
+    X,
+} from 'lucide-react';
+import { type ComponentType, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { PeranPengguna, SharedPageProps } from '@/types/database';
 
 interface DashboardLayoutProps {
     title: string;
     children: ReactNode;
+}
+
+interface NavItem {
+    id: string;
+    label: string;
+    href?: string;
+    icon: ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
+    comingSoon?: boolean;
+}
+
+interface NavGroup {
+    groupLabel: string;
+    items: NavItem[];
 }
 
 const ROLE_LABELS: Record<PeranPengguna, string> = {
@@ -15,11 +46,62 @@ const ROLE_LABELS: Record<PeranPengguna, string> = {
     manajer_penyaluran: 'Manajer Penyaluran',
 };
 
+function getRoleNavItems(peran: PeranPengguna): NavItem[] {
+    switch (peran) {
+        case 'petugas_penghimpunan':
+            return [
+                { id: 'muzaki', label: 'Data Muzaki', icon: Users, comingSoon: true },
+                { id: 'penghimpunan', label: 'Catat Penghimpunan', icon: HandCoins, comingSoon: true },
+                { id: 'draft-sk', label: 'Draft SK Penyaluran', icon: FileSpreadsheet, comingSoon: true },
+            ];
+        case 'verifikator':
+            return [
+                { id: 'mustahik', label: 'Calon Mustahik', icon: Users, comingSoon: true },
+                { id: 'survei', label: 'Berita Acara Survei', icon: ClipboardCheck, comingSoon: true },
+            ];
+        case 'manajer_penyaluran':
+            return [
+                { id: 'setujui-sk', label: 'Persetujuan SK', icon: CheckSquare, comingSoon: true },
+                { id: 'cairkan-sk', label: 'Pencairan Dana', icon: FileCheck2, comingSoon: true },
+            ];
+        case 'admin_sistem':
+            return [
+                { id: 'master', label: 'Master Data Lembaga', icon: Database, comingSoon: true },
+                { id: 'mutasi', label: 'Buku Besar Terpartisi', icon: BookOpen, comingSoon: true },
+                { id: 'audit', label: 'Audit Trail', icon: History, comingSoon: true },
+            ];
+    }
+}
+
 export default function DashboardLayout({ title, children }: DashboardLayoutProps) {
     const { auth } = usePage<SharedPageProps>().props;
     const user = auth.user;
+    const currentUrl = usePage().url;
+
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+    const navGroups = useMemo<NavGroup[]>(() => {
+        const groups: NavGroup[] = [
+            {
+                groupLabel: 'Ringkasan',
+                items: [
+                    { id: 'dashboard', label: 'Ringkasan Saldo', href: '/dashboard', icon: Wallet },
+                    { id: 'public-portal', label: 'Portal Publik', href: '/', icon: ExternalLink },
+                ],
+            },
+        ];
+
+        if (user) {
+            groups.push({
+                groupLabel: ROLE_LABELS[user.peran],
+                items: getRoleNavItems(user.peran),
+            });
+        }
+
+        return groups;
+    }, [user]);
 
     useEffect(() => {
         if (!mobileMenuOpen) {
@@ -43,6 +125,72 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
 
     const roleLabel = user ? ROLE_LABELS[user.peran] : '';
 
+    const renderNavItems = (isCollapsed: boolean, onNavigate?: () => void) => (
+        <div className="space-y-6">
+            {navGroups.map((group) => (
+                <div key={group.groupLabel}>
+                    {!isCollapsed && (
+                        <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-laz-gold/80 truncate">
+                            {group.groupLabel}
+                        </p>
+                    )}
+                    <div className="space-y-1.5">
+                        {group.items.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = item.href ? currentUrl.startsWith(item.href) && item.href !== '/' : false;
+
+                            if (item.comingSoon || !item.href) {
+                                return (
+                                    <div
+                                        key={item.id}
+                                        aria-disabled="true"
+                                        title={`${item.label} (Segera hadir)`}
+                                        className={`flex items-center ${
+                                            isCollapsed ? 'justify-center px-2' : 'justify-between px-3'
+                                        } py-2.5 min-h-11 rounded-[var(--radius-button)] text-laz-cream/50 text-sm cursor-not-allowed`}
+                                    >
+                                        <span className="flex items-center gap-3 min-w-0">
+                                            <Icon className="w-4 h-4 shrink-0" aria-hidden={true} />
+                                            {!isCollapsed && <span className="truncate">{item.label}</span>}
+                                        </span>
+                                        {!isCollapsed && (
+                                            <span className="px-2 py-0.5 rounded-[var(--radius-badge)] border border-laz-gold/25 text-[10px] font-medium uppercase tracking-wider text-laz-gold/75 shrink-0">
+                                                Segera
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    key={item.id}
+                                    href={item.href}
+                                    onClick={onNavigate}
+                                    aria-label={isCollapsed ? item.label : undefined}
+                                    title={isCollapsed ? item.label : undefined}
+                                    className={`flex items-center gap-3 ${
+                                        isCollapsed ? 'justify-center px-2' : 'px-3'
+                                    } py-2.5 min-h-11 rounded-[var(--radius-button)] text-sm font-medium transition-colors ${
+                                        isActive
+                                            ? 'bg-laz-forest-hover text-laz-surface border border-laz-gold/35'
+                                            : 'text-laz-cream/85 hover:bg-laz-forest-hover/70 hover:text-laz-surface'
+                                    }`}
+                                >
+                                    <Icon
+                                        className={`w-4 h-4 shrink-0 ${isActive ? 'text-laz-gold' : 'text-laz-cream/75'}`}
+                                        aria-hidden={true}
+                                    />
+                                    {!isCollapsed && <span className="truncate">{item.label}</span>}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-laz-cream text-laz-forest flex">
             <Head title={title} />
@@ -50,49 +198,62 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
             {/* Desktop Sidebar */}
             <aside
                 aria-label="Navigasi Operasional"
-                className="hidden lg:flex lg:w-72 lg:flex-col bg-laz-forest text-laz-cream shrink-0 border-r border-laz-gold/20"
+                className={`hidden lg:flex lg:flex-col bg-laz-forest text-laz-cream shrink-0 border-r border-laz-gold/20 transition-[width] duration-200 ${
+                    collapsed ? 'lg:w-20' : 'lg:w-72'
+                }`}
             >
-                <div className="px-6 py-6 border-b border-laz-gold/20">
-                    <p className="text-xs font-medium tracking-wider uppercase text-laz-gold">
-                        LAZ Amanah Madani
-                    </p>
-                    <h1 className="mt-1 text-lg font-semibold tracking-tight text-laz-surface">
-                        Kota Pekanbaru
-                    </h1>
+                <div className="px-4 py-5 border-b border-laz-gold/20 flex items-center justify-between gap-2">
+                    {!collapsed && (
+                        <div className="min-w-0">
+                            <p className="text-xs font-medium tracking-wider uppercase text-laz-gold truncate">
+                                LAZ Amanah Madani
+                            </p>
+                            <h1 className="mt-0.5 text-base font-semibold tracking-tight text-laz-surface truncate">
+                                Kota Pekanbaru
+                            </h1>
+                        </div>
+                    )}
+
+                    <button
+                        type="button"
+                        onClick={() => setCollapsed((prev) => !prev)}
+                        aria-label={collapsed ? 'Perluas sidebar navigasi' : 'Ciutkan sidebar navigasi'}
+                        aria-expanded={!collapsed}
+                        className="min-h-11 min-w-11 flex items-center justify-center rounded-[var(--radius-button)] text-laz-cream/85 hover:bg-laz-forest-hover transition-colors shrink-0"
+                    >
+                        {collapsed ? (
+                            <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                        ) : (
+                            <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+                        )}
+                    </button>
                 </div>
 
-                <nav className="flex-1 px-4 py-6 space-y-6" aria-label="Menu Utama">
-                    <div>
-                        <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-laz-gold/80">
-                            Operasional
-                        </p>
-                        <Link
-                            href="/dashboard"
-                            className="flex items-center gap-3 px-3 py-3 min-h-11 rounded-[var(--radius-button)] bg-laz-forest-hover text-laz-surface font-medium border border-laz-gold/30"
-                        >
-                            <Wallet className="w-4 h-4 text-laz-gold shrink-0" aria-hidden="true" />
-                            <span>Ringkasan Dana</span>
-                        </Link>
-                    </div>
+                <nav className="flex-1 px-3 py-6 overflow-y-auto" aria-label="Menu Utama">
+                    {renderNavItems(collapsed)}
                 </nav>
 
                 {user && (
-                    <div className="p-4 border-t border-laz-gold/20 space-y-3">
-                        <div className="px-3 py-2.5 rounded-[var(--radius-button)] bg-laz-forest-hover/80 border border-laz-gold/20">
-                            <p className="text-sm font-semibold text-laz-surface truncate">
-                                {user.nama_lengkap}
-                            </p>
-                            <p className="text-xs text-laz-gold mt-0.5 truncate">{roleLabel}</p>
-                            <p className="text-xs text-laz-cream/70 mt-0.5 truncate">{user.jabatan}</p>
-                        </div>
+                    <div className="p-3 border-t border-laz-gold/20 space-y-3">
+                        {!collapsed && (
+                            <div className="px-3 py-2.5 rounded-[var(--radius-button)] bg-laz-forest-hover/80 border border-laz-gold/20">
+                                <p className="text-sm font-semibold text-laz-surface truncate">
+                                    {user.nama_lengkap}
+                                </p>
+                                <p className="text-xs text-laz-gold mt-0.5 truncate">{roleLabel}</p>
+                                <p className="text-xs text-laz-cream/70 mt-0.5 truncate">{user.jabatan}</p>
+                            </div>
+                        )}
 
                         <button
                             type="button"
                             onClick={handleLogout}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 min-h-11 rounded-[var(--radius-button)] border border-laz-gold/35 text-laz-cream hover:bg-laz-forest-hover transition-colors text-sm font-medium"
+                            aria-label="Keluar Sesi"
+                            title={collapsed ? 'Keluar Sesi' : undefined}
+                            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 min-h-11 rounded-[var(--radius-button)] border border-laz-gold/35 text-laz-cream hover:bg-laz-forest-hover transition-colors text-sm font-medium"
                         >
-                            <LogOut className="w-4 h-4" aria-hidden="true" />
-                            <span>Keluar Sesi</span>
+                            <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            {!collapsed && <span>Keluar Sesi</span>}
                         </button>
                     </div>
                 )}
@@ -132,15 +293,8 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                             </button>
                         </div>
 
-                        <nav className="flex-1 px-4 py-5 space-y-2">
-                            <Link
-                                href="/dashboard"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center gap-3 px-3 py-3 min-h-11 rounded-[var(--radius-button)] bg-laz-forest-hover text-laz-surface font-medium border border-laz-gold/30"
-                            >
-                                <Wallet className="w-4 h-4 text-laz-gold" aria-hidden="true" />
-                                <span>Ringkasan Dana</span>
-                            </Link>
+                        <nav className="flex-1 px-4 py-5 overflow-y-auto">
+                            {renderNavItems(false, () => setMobileMenuOpen(false))}
                         </nav>
 
                         {user && (
