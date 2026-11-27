@@ -38,7 +38,7 @@ export default function TabelTransparansiPublik({
             <div className="p-6 border-b border-laz-gold/25 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                     <h3 className="text-lg font-bold text-laz-forest">
-                        Riwayat Penyaluran Tersamar (v_laporan_publik_zis)
+                        Riwayat Penyaluran Dana
                     </h3>
                     <p className="mt-1 text-sm text-laz-muted">
                         Identitas NIK dan nama lengkap mustahik disamarkan otomatis oleh view database untuk menjaga martabat penerima manfaat.

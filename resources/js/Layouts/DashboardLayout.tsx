@@ -9,6 +9,7 @@ import {
     FileCheck2,
     FileSpreadsheet,
     HandCoins,
+    HelpCircle,
     History,
     LogOut,
     Menu,
@@ -91,6 +92,7 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                 groupLabel: 'Ringkasan',
                 items: [
                     { id: 'dashboard', label: 'Ringkasan Saldo', href: '/dashboard', icon: Wallet },
+                    { id: 'panduan', label: 'Panduan Sistem', href: '/dashboard/panduan', icon: HelpCircle },
                     { id: 'public-portal', label: 'Portal Publik', href: '/', icon: ExternalLink },
                 ],
             },

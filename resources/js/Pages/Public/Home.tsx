@@ -2,7 +2,7 @@ import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowDown, X } from 'lucide-react';
+import { ArrowDown, Calculator, ChevronDown, Eye, Landmark, ReceiptText, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DistribusiAsnafChart from '@/Components/zakat/DistribusiAsnafChart';
 import KalkulatorZakat from '@/Components/zakat/KalkulatorZakat';
@@ -26,6 +26,60 @@ interface HomeProps {
     rekeningResmi: RekeningLembaga[];
 }
 
+const DONOR_STEPS = [
+    {
+        step: '01',
+        title: 'Hitung Kewajiban Zakat',
+        desc: 'Gunakan Kalkulator Zakat untuk menghitung Zakat Penghasilan atau Maal sesuai nisab 85 gram emas.',
+        href: '#kalkulator',
+        cta: 'Buka Kalkulator',
+        icon: Calculator,
+    },
+    {
+        step: '02',
+        title: 'Pilih Rekening Resmi Sesuai Akad',
+        desc: 'Salin nomor rekening BSI atau BRK Syariah berdasarkan akad Zakat, Infak/Sedekah, atau Wakaf.',
+        href: '#rekening',
+        cta: 'Lihat Rekening',
+        icon: Landmark,
+    },
+    {
+        step: '03',
+        title: 'Setor & Terima Kuitansi Resmi',
+        desc: 'Lakukan transfer atau setoran di gerai LAZ Amanah Madani untuk dicatat ke kantong dana resmi.',
+        href: '#rekening',
+        cta: 'Salurkan Sekarang',
+        icon: ReceiptText,
+    },
+    {
+        step: '04',
+        title: 'Pantau Penyaluran Real-Time',
+        desc: 'Periksa grafik distribusi 8 Asnaf dan riwayat penyaluran pada Portal Transparansi Publik.',
+        href: '#transparansi',
+        cta: 'Cek Transparansi',
+        icon: Eye,
+    },
+] as const;
+
+const FAQ_ITEMS = [
+    {
+        q: 'Mengapa nomor rekening dipisah antara Zakat, Infak/Sedekah, dan Wakaf?',
+        a: 'Sesuai ketentuan syariah, dana Zakat hanya boleh disalurkan kepada 8 golongan asnaf yang berhak, sedangkan Infak/Sedekah dan Wakaf memiliki peruntukan akad masing-masing agar tidak bercampur.',
+    },
+    {
+        q: 'Apa yang dimaksud dengan batas kuota Hak Amil maksimal 12,5%?',
+        a: 'LAZ Amanah Madani membatasi alokasi operasional Amil maksimal 12,5% dari total penghimpunan zakat agar porsi terbesar tetap diterima oleh mustahik yang membutuhkan.',
+    },
+    {
+        q: 'Mengapa NIK dan nama mustahik pada tabel transparansi disamarkan?',
+        a: 'Penyamaran sebagian karakter NIK dan nama dilakukan untuk melindungi privasi dan menjaga martabat penerima bantuan, sembari tetap menampilkan bukti penyaluran secara terbuka.',
+    },
+    {
+        q: 'Bagaimana cara menyalurkan dana atau meminta bukti kuitansi resmi?',
+        a: 'Anda dapat mentransfer ke salah satu rekening resmi pada direktori di atas atau datang langsung ke kantor layanan LAZ Amanah Madani Kota Pekanbaru untuk pencatatan dan penerbitan kuitansi resmi.',
+    },
+] as const;
+
 export default function Home({
     rekapDana,
     porsiAsnaf,
@@ -34,6 +88,7 @@ export default function Home({
 }: HomeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [salurkanModalOpen, setSalurkanModalOpen] = useState(false);
+    const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
     const totals = useMemo(() => {
         return rekapDana.reduce(
@@ -162,7 +217,7 @@ export default function Home({
                                 Pemisahan Dana Berdasarkan Akad
                             </h2>
                             <p className="mt-2 text-sm sm:text-base text-laz-muted">
-                                Sistem basis data menolak pencampuran dana antar-akad. Berikut posisi saldo aktif dari view publik v_rekap_induk_dana.
+                                Setiap pilar akad dikelola secara terpisah sesuai syariah. Berikut ringkasan posisi saldo aktif lembaga secara real-time.
                             </p>
                         </div>
 
@@ -209,7 +264,7 @@ export default function Home({
                 </section>
 
                 {/* Direktori Rekening Resmi */}
-                <section id="rekening" className="py-24 border-b border-laz-gold/30">
+                <section id="rekening" className="scroll-mt-20 py-24 border-b border-laz-gold/30">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-laz-forest">
@@ -225,7 +280,7 @@ export default function Home({
                 </section>
 
                 {/* Kalkulator Zakat */}
-                <section id="kalkulator" className="py-24 bg-laz-surface border-b border-laz-gold/30">
+                <section id="kalkulator" className="scroll-mt-20 py-24 bg-laz-surface border-b border-laz-gold/30">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-laz-forest">
@@ -240,15 +295,121 @@ export default function Home({
                     </div>
                 </section>
 
+                {/* Panduan & Tata Cara Donatur */}
+                <section id="panduan" className="scroll-mt-20 py-24 bg-laz-cream border-b border-laz-gold/30">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                        <div className="max-w-2xl">
+                            <p className="text-xs font-semibold uppercase tracking-widest text-laz-sage">
+                                Panduan Muzaki &amp; Donatur
+                            </p>
+                            <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-laz-forest">
+                                Tata Cara Menunaikan ZISWAF
+                            </h2>
+                            <p className="mt-2 text-sm sm:text-base text-laz-muted">
+                                Empat langkah sederhana untuk menunaikan zakat, infak, sedekah, atau wakaf sekaligus memantau penyalurannya secara transparan.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                            {DONOR_STEPS.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <div
+                                        key={item.step}
+                                        className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-5"
+                                    >
+                                        <div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-mono text-xs font-bold tracking-wider text-laz-sage bg-laz-cream px-2.5 py-1 rounded-full border border-laz-gold/30">
+                                                    LANGKAH {item.step}
+                                                </span>
+                                                <Icon className="w-5 h-5 text-laz-forest" aria-hidden="true" />
+                                            </div>
+                                            <h3 className="mt-4 text-base font-bold text-laz-forest">
+                                                {item.title}
+                                            </h3>
+                                            <p className="mt-2 text-sm leading-relaxed text-laz-muted">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+
+                                        {item.step === '03' ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => setSalurkanModalOpen(true)}
+                                                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] border border-laz-gold/50 bg-laz-cream/60 hover:bg-laz-cream px-4 py-2 text-xs font-semibold text-laz-forest transition-colors"
+                                            >
+                                                {item.cta}
+                                            </button>
+                                        ) : (
+                                            <a
+                                                href={item.href}
+                                                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-button)] border border-laz-gold/50 bg-laz-cream/60 hover:bg-laz-cream px-4 py-2 text-xs font-semibold text-laz-forest transition-colors"
+                                            >
+                                                {item.cta}
+                                            </a>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* FAQ Accordion */}
+                        <div className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 sm:p-8">
+                            <h3 className="text-lg font-bold text-laz-forest">
+                                Pertanyaan Umum (FAQ)
+                            </h3>
+                            <div className="mt-4 divide-y divide-laz-gold/25">
+                                {FAQ_ITEMS.map((faq, idx) => {
+                                    const isOpen = openFaqIndex === idx;
+                                    return (
+                                        <div key={faq.q} className="py-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                                                aria-expanded={isOpen}
+                                                className="w-full min-h-11 flex items-center justify-between gap-4 text-left text-sm sm:text-base font-semibold text-laz-forest hover:text-laz-sage transition-colors py-1"
+                                            >
+                                                <span>{faq.q}</span>
+                                                <ChevronDown
+                                                    className={`w-4 h-4 shrink-0 text-laz-muted transition-transform duration-200 ${
+                                                        isOpen ? 'rotate-180 text-laz-forest' : ''
+                                                    }`}
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
+                                            <AnimatePresence initial={false}>
+                                                {isOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="overflow-hidden"
+                                                    >
+                                                        <p className="pt-2 pb-1 text-sm leading-relaxed text-laz-muted">
+                                                            {faq.a}
+                                                        </p>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Transparansi Publik: 8 Asnaf & Tabel Tersamar */}
-                <section id="transparansi" className="py-24">
+                <section id="transparansi" className="scroll-mt-20 py-24">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-laz-forest">
                                 Portal Transparansi Penyaluran Publik
                             </h2>
                             <p className="mt-2 text-sm sm:text-base text-laz-muted">
-                                Data diaudit langsung melalui koneksi khusus baca-saja (usr_laz_laporan) untuk menjamin akuntabilitas publik dan privasi mustahik.
+                                Laporan disajikan langsung dari catatan penyaluran resmi dengan penyamaran identitas penerima demi menjaga akuntabilitas publik dan martabat mustahik.
                             </p>
                         </div>
 

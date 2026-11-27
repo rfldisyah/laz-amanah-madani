@@ -8,6 +8,7 @@ use App\Http\Controllers\PenghimpunanController;
 use App\Http\Controllers\PenyaluranController;
 use App\Http\Controllers\Public\LandingTransparansiController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', LandingTransparansiController::class)->name('home');
 
@@ -19,6 +20,7 @@ Route::middleware('guest')->group(function (): void {
 Route::middleware(['auth', 'laz.role:admin_sistem,verifikator,petugas_penghimpunan,manajer_penyaluran'])->group(function (): void {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard/panduan', fn () => Inertia::render('Dashboard/Panduan'))->name('dashboard.panduan');
 });
 
 Route::middleware(['auth', 'laz.role:petugas_penghimpunan,admin_sistem'])->group(function (): void {

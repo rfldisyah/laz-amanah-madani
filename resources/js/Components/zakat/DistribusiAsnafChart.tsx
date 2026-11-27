@@ -21,7 +21,7 @@ export default function DistribusiAsnafChart({ porsiAsnaf }: DistribusiAsnafChar
                         Distribusi Dana Zakat per 8 Golongan Asnaf
                     </h3>
                     <p className="mt-1 text-sm text-laz-muted">
-                        Proporsi penyaluran langsung dari view v_porsi_asnaf dengan pengawasan kuota syariah.
+                        Proporsi penyaluran dana zakat sesuai 8 golongan asnaf dengan pengawasan kuota syariah.
                     </p>
                 </div>
 
@@ -45,7 +45,7 @@ export default function DistribusiAsnafChart({ porsiAsnaf }: DistribusiAsnafChar
 
             {porsiAsnaf.length === 0 ? (
                 <p className="text-sm text-laz-muted">
-                    Belum ada data distribusi asnaf pada v_porsi_asnaf.
+                    Belum ada data distribusi asnaf yang tercatat.
                 </p>
             ) : (
                 <div className="space-y-4">

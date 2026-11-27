@@ -96,24 +96,25 @@ export default function RekeningDirectory({ rekeningResmi }: RekeningDirectoryPr
                                 key={rek.id_rekening}
                                 className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-5"
                             >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-3">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between gap-3">
                                         <div className="w-10 h-10 rounded-[var(--radius-button)] bg-laz-cream border border-laz-gold/40 text-laz-forest flex items-center justify-center shrink-0">
                                             <Landmark className="w-5 h-5" aria-hidden="true" />
                                         </div>
-                                        <div>
-                                            <h3 className="text-base font-bold text-laz-forest">
-                                                {rek.nama_bank}
-                                            </h3>
-                                            <p className="text-sm text-laz-muted mt-0.5">
-                                                a.n. {rek.atas_nama}
-                                            </p>
-                                        </div>
+
+                                        <span className="px-2.5 py-1 rounded-[var(--radius-badge)] bg-laz-cream border border-laz-gold/40 text-xs font-semibold text-laz-forest whitespace-nowrap shrink-0">
+                                            {KATEGORI_INDUK_LABELS[rek.kategori_induk]}
+                                        </span>
                                     </div>
 
-                                    <span className="px-2.5 py-1 rounded-[var(--radius-badge)] bg-laz-cream border border-laz-gold/40 text-xs font-semibold text-laz-forest shrink-0">
-                                        {KATEGORI_INDUK_LABELS[rek.kategori_induk]}
-                                    </span>
+                                    <div className="min-w-0">
+                                        <h3 className="text-base font-bold text-laz-forest leading-snug">
+                                            {rek.nama_bank}
+                                        </h3>
+                                        <p className="text-sm text-laz-muted mt-1 leading-relaxed">
+                                            a.n. {rek.atas_nama}
+                                        </p>
+                                    </div>
                                 </div>
 
                                 <div className="pt-4 border-t border-laz-gold/25 flex flex-wrap items-center justify-between gap-3">
