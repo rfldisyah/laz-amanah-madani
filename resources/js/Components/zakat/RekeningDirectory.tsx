@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Copy, Landmark } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { KATEGORI_INDUK_LABELS } from '@/lib/formatters';
 import type { KategoriInduk, RekeningLembaga } from '@/types/database';
 
@@ -19,6 +19,8 @@ const KATEGORI_DESKRIPSI: Record<KategoriInduk, string> = {
 export default function RekeningDirectory({ rekeningResmi }: RekeningDirectoryProps) {
     const [activeKategori, setActiveKategori] = useState<KategoriInduk>('ZAKAT');
     const [copiedId, setCopiedId] = useState<number | null>(null);
+    const [copiedNomor, setCopiedNomor] = useState<string | null>(null);
+    const copyTimerRef = useRef<number | null>(null);
 
     const grouped = useMemo(() => {
         return KATEGORI_ORDER.reduce<Record<KategoriInduk, RekeningLembaga[]>>(
@@ -32,16 +34,54 @@ export default function RekeningDirectory({ rekeningResmi }: RekeningDirectoryPr
 
     const currentList = grouped[activeKategori];
 
-    const handleCopy = async (idRekening: number, nomorRekening: string) => {
-        try {
-            await navigator.clipboard.writeText(nomorRekening);
-            setCopiedId(idRekening);
-            window.setTimeout(() => {
-                setCopiedId((prev) => (prev === idRekening ? null : prev));
-            }, 2000);
-        } catch {
-            // Clipboard API may be blocked in non-HTTPS contexts.
+    const copyTextWithFallback = async (text: string): Promise<boolean> => {
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch {
+                // Fallback ke textarea di bawah
+            }
         }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        let ok = false;
+        try {
+            ok = document.execCommand('copy');
+        } catch {
+            ok = false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+
+        return ok;
+    };
+
+    const handleCopy = async (idRekening: number, nomorRekening: string) => {
+        const copied = await copyTextWithFallback(nomorRekening);
+        if (!copied) {
+            return;
+        }
+
+        if (copyTimerRef.current !== null) {
+            window.clearTimeout(copyTimerRef.current);
+        }
+
+        setCopiedId(idRekening);
+        setCopiedNomor(nomorRekening);
+
+        copyTimerRef.current = window.setTimeout(() => {
+            setCopiedId(null);
+            setCopiedNomor(null);
+        }, 2500);
     };
 
     return (
@@ -152,6 +192,25 @@ export default function RekeningDirectory({ rekeningResmi }: RekeningDirectoryPr
                     })}
                 </div>
             )}
+
+            <AnimatePresence>
+                {copiedNomor && (
+                    <motion.div
+                        role="status"
+                        aria-live="polite"
+                        initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] inline-flex items-center gap-2.5 rounded-full bg-laz-forest text-laz-surface border border-laz-gold/45 px-5 py-2.5 text-sm font-medium shadow-lg whitespace-nowrap"
+                    >
+                        <Check className="w-4 h-4 text-laz-gold shrink-0" aria-hidden="true" />
+                        <span>
+                            No. rekening <span className="font-mono font-semibold">{copiedNomor}</span> disalin
+                        </span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

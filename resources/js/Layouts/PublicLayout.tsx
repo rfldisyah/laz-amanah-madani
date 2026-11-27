@@ -15,6 +15,7 @@ interface PublicLayoutProps {
 }
 
 const NAV_LINKS = [
+    { href: '#program', label: 'Program' },
     { href: '#rekening', label: 'Rekening Resmi' },
     { href: '#kalkulator', label: 'Kalkulator Zakat' },
     { href: '#panduan', label: 'Tata Cara' },
@@ -335,6 +336,9 @@ export default function PublicLayout({ title, children }: PublicLayoutProps) {
                             </p>
                             <p className="mt-1.5 text-sm text-laz-cream/80 max-w-md">
                                 Pengelolaan dana Zakat, Infak, Sedekah, dan Wakaf dengan pemisahan rekening akad syariah serta pelaporan publik yang menjaga martabat mustahik.
+                            </p>
+                            <p className="mt-3 text-xs text-laz-cream/65">
+                                Layanan ZISWAF Kota Pekanbaru, Riau &bull; &copy; {new Date().getFullYear()} LAZ Amanah Madani
                             </p>
                         </div>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Program;
 use App\Models\RekeningLembaga;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -68,11 +69,27 @@ class LandingTransparansiController extends Controller
                 'is_aktif',
             ]);
 
+        $programAktif = Program::query()
+            ->with('jenisDana:id_jenis_dana,kode_dana,nama_dana,kategori_induk')
+            ->where('status_program', 'AKTIF')
+            ->orderBy('id_program')
+            ->get([
+                'id_program',
+                'id_jenis_dana',
+                'kode_program',
+                'nama_program',
+                'target_dana',
+                'tgl_mulai',
+                'tgl_selesai',
+                'status_program',
+            ]);
+
         return Inertia::render('Public/Home', [
             'rekapDana' => $rekapDana,
             'porsiAsnaf' => $porsiAsnaf,
             'laporanPublik' => $laporanPublik,
             'rekeningResmi' => $rekeningResmi,
+            'programAktif' => $programAktif,
         ]);
     }
 }

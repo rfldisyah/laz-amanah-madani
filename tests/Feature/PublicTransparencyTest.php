@@ -18,6 +18,7 @@ class PublicTransparencyTest extends TestCase
             ->has('porsiAsnaf', 8)
             ->has('laporanPublik')
             ->has('rekeningResmi')
+            ->has('programAktif')
         );
     }
 

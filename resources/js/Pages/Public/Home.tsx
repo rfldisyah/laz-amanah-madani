@@ -2,28 +2,35 @@ import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowDown, Calculator, ChevronDown, Eye, Landmark, ReceiptText, X } from 'lucide-react';
+import { ArrowDown, Calculator, Calendar, ChevronDown, Eye, HandHeart, Landmark, ReceiptText, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DistribusiAsnafChart from '@/Components/zakat/DistribusiAsnafChart';
 import KalkulatorZakat from '@/Components/zakat/KalkulatorZakat';
 import RekeningDirectory from '@/Components/zakat/RekeningDirectory';
 import TabelTransparansiPublik from '@/Components/zakat/TabelTransparansiPublik';
 import PublicLayout from '@/Layouts/PublicLayout';
-import { formatRupiah, KATEGORI_INDUK_LABELS } from '@/lib/formatters';
+import { formatRupiah, formatTanggalId, KATEGORI_INDUK_LABELS } from '@/lib/formatters';
 import type {
+    JenisDana,
     LaporanPublikZis,
     PorsiAsnaf,
+    Program,
     RekapIndukDana,
     RekeningLembaga,
 } from '@/types/database';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+type ProgramAktifRow = Program & {
+    jenis_dana?: Pick<JenisDana, 'id_jenis_dana' | 'kode_dana' | 'nama_dana' | 'kategori_induk'>;
+};
+
 interface HomeProps {
     rekapDana: RekapIndukDana[];
     porsiAsnaf: PorsiAsnaf[];
     laporanPublik: LaporanPublikZis[];
     rekeningResmi: RekeningLembaga[];
+    programAktif: ProgramAktifRow[];
 }
 
 const DONOR_STEPS = [
@@ -85,10 +92,22 @@ export default function Home({
     porsiAsnaf,
     laporanPublik,
     rekeningResmi,
+    programAktif,
 }: HomeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [salurkanModalOpen, setSalurkanModalOpen] = useState(false);
+    const [programModalOpen, setProgramModalOpen] = useState(false);
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+    const impactStats = useMemo(() => {
+        const totalPenerima = porsiAsnaf.reduce((sum, item) => sum + Number(item.jumlah_penerima || 0), 0);
+        const totalKantong = rekapDana.reduce((sum, item) => sum + Number(item.jumlah_kantong_dana || 0), 0);
+        return {
+            totalPenerima,
+            totalProgram: programAktif.length,
+            totalKantong,
+        };
+    }, [porsiAsnaf, programAktif.length, rekapDana]);
 
     const totals = useMemo(() => {
         return rekapDana.reduce(
@@ -134,17 +153,83 @@ export default function Home({
     );
 
     useEffect(() => {
-        if (!salurkanModalOpen) {
+        if (!salurkanModalOpen && !programModalOpen) {
             return;
         }
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 setSalurkanModalOpen(false);
+                setProgramModalOpen(false);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [salurkanModalOpen]);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [salurkanModalOpen, programModalOpen]);
+
+    const renderProgramCard = (prog: ProgramAktifRow) => (
+        <article
+            key={prog.id_program}
+            className="rounded-[var(--radius-card)] border border-laz-gold/35 bg-laz-cream/40 p-6 flex flex-col justify-between gap-5"
+        >
+            <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs font-semibold text-laz-muted">
+                        {prog.kode_program}
+                    </span>
+                    {prog.jenis_dana && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-laz-surface border border-laz-gold/40 text-xs font-semibold text-laz-forest whitespace-nowrap">
+                            {KATEGORI_INDUK_LABELS[prog.jenis_dana.kategori_induk]}
+                        </span>
+                    )}
+                </div>
+
+                <h3 className="text-base font-bold text-laz-forest leading-snug">
+                    {prog.nama_program}
+                </h3>
+
+                {prog.jenis_dana && (
+                    <p className="text-xs text-laz-muted">
+                        Sumber Dana: {prog.jenis_dana.nama_dana}
+                    </p>
+                )}
+            </div>
+
+            <div className="pt-4 border-t border-laz-gold/25 space-y-4">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                    <div>
+                        <p className="text-laz-muted">Target Penghimpunan</p>
+                        <p className="mt-0.5 font-mono text-sm font-bold text-laz-forest">
+                            {formatRupiah(prog.target_dana)}
+                        </p>
+                    </div>
+                    <div className="text-right text-laz-muted inline-flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
+                        <span>{formatTanggalId(prog.tgl_mulai)}</span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        setProgramModalOpen(false);
+                        setSalurkanModalOpen(true);
+                    }}
+                    className="w-full min-h-11 inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] bg-laz-forest hover:bg-laz-forest-hover text-laz-surface text-xs font-semibold transition-colors"
+                >
+                    <HandHeart className="w-4 h-4 text-laz-gold" aria-hidden="true" />
+                    <span>Salurkan ke Program Ini</span>
+                </button>
+            </div>
+        </article>
+    );
 
     return (
         <PublicLayout title="Portal Transparansi ZIS Kota Pekanbaru">
@@ -260,6 +345,62 @@ export default function Home({
                                 </article>
                             ))}
                         </div>
+                    </div>
+                </section>
+
+                {/* Etalase Program Penyaluran Aktif */}
+                <section id="program" className="scroll-mt-20 py-24 bg-laz-surface border-b border-laz-gold/30">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                            <div className="max-w-2xl">
+                                <p className="text-xs font-semibold uppercase tracking-widest text-laz-sage">
+                                    Program Pemberdayaan &amp; Sosial
+                                </p>
+                                <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-laz-forest">
+                                    Program Penyaluran Aktif
+                                </h2>
+                                <p className="mt-2 text-sm sm:text-base text-laz-muted">
+                                    Seluruh program aktif terikat langsung pada kantong dana dan akad masing-masing di Kota Pekanbaru dan Riau.
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3 sm:gap-4 shrink-0">
+                                <div className="rounded-[var(--radius-button)] border border-laz-gold/35 bg-laz-cream/60 px-4 py-3 text-center">
+                                    <p className="font-mono text-lg sm:text-xl font-bold text-laz-forest">
+                                        {impactStats.totalPenerima}
+                                    </p>
+                                    <p className="text-[11px] font-medium text-laz-muted">Penerima</p>
+                                </div>
+                                <div className="rounded-[var(--radius-button)] border border-laz-gold/35 bg-laz-cream/60 px-4 py-3 text-center">
+                                    <p className="font-mono text-lg sm:text-xl font-bold text-laz-forest">
+                                        {impactStats.totalProgram}
+                                    </p>
+                                    <p className="text-[11px] font-medium text-laz-muted">Program Aktif</p>
+                                </div>
+                                <div className="rounded-[var(--radius-button)] border border-laz-gold/35 bg-laz-cream/60 px-4 py-3 text-center">
+                                    <p className="font-mono text-lg sm:text-xl font-bold text-laz-forest">
+                                        {impactStats.totalKantong}
+                                    </p>
+                                    <p className="text-[11px] font-medium text-laz-muted">Kantong Dana</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {programAktif.slice(0, 3).map(renderProgramCard)}
+                        </div>
+
+                        {programAktif.length > 3 && (
+                            <div className="flex justify-center pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setProgramModalOpen(true)}
+                                    className="min-h-11 px-6 py-2.5 rounded-[var(--radius-button)] border border-laz-gold/60 bg-laz-cream/70 hover:bg-laz-cream text-laz-forest text-sm font-semibold transition-colors"
+                                >
+                                    Lihat Semua Program ({programAktif.length})
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </section>
 
@@ -437,11 +578,12 @@ export default function Home({
                         />
 
                         <motion.div
+                            data-lenis-prevent
                             initial={{ opacity: 0, scale: 0.97, y: 8 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.97, y: 8 }}
                             transition={{ duration: 0.2 }}
-                            className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/40 p-6 sm:p-8 shadow-xl space-y-6"
+                            className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto overscroll-contain bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/40 p-6 sm:p-8 shadow-xl space-y-6"
                         >
                             <div className="flex items-start justify-between gap-4 pb-4 border-b border-laz-gold/25">
                                 <div>
@@ -466,6 +608,65 @@ export default function Home({
                             </div>
 
                             <RekeningDirectory rekeningResmi={rekeningResmi} />
+
+                            <p className="text-xs leading-relaxed text-laz-muted border-t border-laz-gold/25 pt-4">
+                                Setelah melakukan transfer, silakan konfirmasikan setoran Anda melalui layanan gerai LAZ Amanah Madani Kota Pekanbaru untuk pencatatan transaksi dan penerbitan kuitansi resmi.
+                            </p>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Modal Semua Program Aktif */}
+            <AnimatePresence>
+                {programModalOpen && (
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="modal-program-title"
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    >
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setProgramModalOpen(false)}
+                            className="fixed inset-0 bg-laz-forest/55"
+                        />
+
+                        <motion.div
+                            data-lenis-prevent
+                            initial={{ opacity: 0, scale: 0.97, y: 8 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.97, y: 8 }}
+                            transition={{ duration: 0.2 }}
+                            className="relative z-10 w-full max-w-5xl max-h-[85vh] overflow-y-auto overscroll-contain bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/40 p-6 sm:p-8 shadow-xl space-y-6"
+                        >
+                            <div className="flex items-start justify-between gap-4 pb-4 border-b border-laz-gold/25">
+                                <div>
+                                    <h3
+                                        id="modal-program-title"
+                                        className="text-xl font-bold text-laz-forest"
+                                    >
+                                        Semua Program Penyaluran Aktif ({programAktif.length})
+                                    </h3>
+                                    <p className="mt-1 text-sm text-laz-muted">
+                                        Pilih program yang ingin Anda dukung untuk melihat rekening resmi sesuai akadnya.
+                                    </p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setProgramModalOpen(false)}
+                                    aria-label="Tutup modal daftar program"
+                                    className="min-h-11 min-w-11 flex items-center justify-center rounded-[var(--radius-button)] text-laz-forest hover:bg-laz-cream"
+                                >
+                                    <X className="w-5 h-5" aria-hidden="true" />
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                {programAktif.map(renderProgramCard)}
+                            </div>
                         </motion.div>
                     </div>
                 )}
