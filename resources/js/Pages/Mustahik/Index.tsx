@@ -852,10 +852,7 @@ export default function MustahikIndex({
                             Riwayat Survei Terbaru
                         </h2>
                         <p className="mt-0.5 text-xs text-laz-muted">
-                            15 berita acara survei terakhir dari{' '}
-                            <span className="font-mono">
-                                sp_verifikasi_mustahik
-                            </span>
+                            15 berita acara survei lapangan terakhir
                         </p>
                     </div>
                     <div className="overflow-x-auto">

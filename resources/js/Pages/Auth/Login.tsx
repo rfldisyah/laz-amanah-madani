@@ -212,7 +212,7 @@ export default function Login() {
 
                         <div className="mt-8 pt-5 border-t border-laz-gold/20 text-xs text-laz-cream/70">
                             <p>
-                                Seluruh aktivitas pencatatan dana diawasi oleh prosedur RDBMS dan tercatat dalam log audit sistem.
+                                Seluruh aktivitas pencatatan dana diawasi oleh kontrol sistem internal dan tercatat dalam log audit.
                             </p>
                         </div>
                     </aside>

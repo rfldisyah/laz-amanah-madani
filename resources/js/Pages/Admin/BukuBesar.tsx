@@ -77,8 +77,7 @@ export default function BukuBesar({
                         Buku Besar Mutasi Dana (Partitioned)
                     </h1>
                     <p className="mt-1 text-sm text-laz-muted">
-                        Penjelajah mutasi kas dengan{' '}
-                        <span className="font-mono">RANGE PARTITION</span>{' '}
+                        Penjelajah riwayat mutasi kas yang dikelompokkan
                         berdasarkan tahun transaksi (2024, 2025, 2026+).
                     </p>
                 </div>

@@ -132,10 +132,10 @@ export default function PenghimpunanIndex({
                     <div className="pb-5 border-b border-laz-gold/25 flex flex-wrap items-center justify-between gap-4">
                         <div>
                             <h3 id="form-penghimpunan-heading" className="text-lg font-bold text-laz-forest">
-                                Formulir Setoran Masuk (sp_catat_penghimpunan)
+                                Formulir Setoran Masuk
                             </h3>
                             <p className="mt-1 text-sm text-laz-muted">
-                                Mencatat transaksi masuk, memperbarui saldo_dana, dan membuat jurnal mutasi_dana secara atomik di RDBMS.
+                                Mencatat transaksi masuk, memperbarui saldo kantong dana, dan membuat jurnal mutasi kas secara otomatis.
                             </p>
                         </div>
                         <Link

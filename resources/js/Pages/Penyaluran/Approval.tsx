@@ -178,11 +178,7 @@ export default function PenyaluranApproval({
                         Otorisasi Pimpinan & Pencairan Dana
                     </h1>
                     <p className="mt-1 text-sm text-laz-muted">
-                        Pemeriksaan SK berstatus DRAFT, pengesahan via{' '}
-                        <span className="font-mono">sp_setujui_penyaluran</span>
-                        , dan pencairan dana via{' '}
-                        <span className="font-mono">sp_cairkan_penyaluran</span>
-                        .
+                        Pemeriksaan SK berstatus DRAFT, pengesahan pimpinan, dan eksekusi pencairan dana ke mustahik.
                     </p>
                 </div>
 
@@ -682,8 +678,8 @@ export default function PenyaluranApproval({
                                     </h2>
                                     <p className="mt-2 text-sm text-laz-muted">
                                         {confirmAction.type === 'approve'
-                                            ? `Anda akan mengesahkan SK ${confirmAction.sk.nomor_sk_salur} senilai ${formatRupiah(confirmAction.sk.total_nominal)} melalui sp_setujui_penyaluran.`
-                                            : `Anda akan mencairkan dana SK ${confirmAction.sk.nomor_sk_salur} senilai ${formatRupiah(confirmAction.sk.total_nominal)} melalui sp_cairkan_penyaluran. Saldo kantong dana akan dipotong dan dicatat ke buku besar mutasi_dana.`}
+                                            ? `Anda akan mengesahkan SK ${confirmAction.sk.nomor_sk_salur} senilai ${formatRupiah(confirmAction.sk.total_nominal)}.`
+                                            : `Anda akan mencairkan dana SK ${confirmAction.sk.nomor_sk_salur} senilai ${formatRupiah(confirmAction.sk.total_nominal)}. Saldo kantong dana akan dipotong dan dicatat ke buku besar kas.`}
                                     </p>
                                 </div>
                             </div>

@@ -40,8 +40,8 @@ export default function AuditTrail({ logs, filters }: AuditTrailProps) {
                             Audit Trail Sistem (Read-Only)
                         </h1>
                         <p className="mt-1 text-sm text-laz-muted">
-                            Rekam jejak perubahan tabel sensitif yang dicatat
-                            otomatis oleh trigger RDBMS.
+                            Rekam jejak perubahan data penting yang tercatat
+                            otomatis oleh sistem.
                         </p>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-laz-gold/45 bg-laz-cream px-4 py-2 text-xs font-semibold text-laz-forest">

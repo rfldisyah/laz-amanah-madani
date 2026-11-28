@@ -585,7 +585,7 @@ function ModalDetailPenyaluran({
                                         {formatRupiah(sisaKuotaAmil)}
                                     </span>
                                     {exceedsAmilQuota &&
-                                        ' — Nominal melebihi sisa kuota dan akan ditolak trigger SQL.'}
+                                        ' — Nominal melebihi sisa kuota hak amil periode berjalan.'}
                                 </div>
                             )}
 
