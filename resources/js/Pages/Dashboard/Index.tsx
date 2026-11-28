@@ -73,7 +73,7 @@ export default function DashboardIndex({
                                 {user?.nama_lengkap}
                             </h3>
                             <p className="mt-1 text-sm text-laz-muted">
-                                {user?.jabatan} ({user?.username})
+                                {user?.jabatan}
                             </p>
                         </div>
 
@@ -104,7 +104,7 @@ export default function DashboardIndex({
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-laz-muted">
-                                    Pengawasan Syariah RDBMS
+                                    Pengawasan Kuota Syariah
                                 </p>
                                 <h3 className="mt-1 text-lg font-bold text-laz-forest">
                                     Batas Kuota Hak Amil (Maksimal 12,5%)
@@ -196,7 +196,7 @@ export default function DashboardIndex({
 
                     {rekapDana.length === 0 ? (
                         <div className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 text-sm text-laz-muted">
-                            Belum ada data pada v_rekap_induk_dana.
+                            Belum ada data rekapitulasi saldo akad.
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -246,7 +246,7 @@ export default function DashboardIndex({
                     <div className="p-6 border-b border-laz-gold/25 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                         <div>
                             <h3 id="kantong-heading" className="text-base font-bold text-laz-forest">
-                                Rincian Kantong Saldo Dana (saldo_dana)
+                                Rincian Kantong Saldo Dana
                             </h3>
                             <p className="mt-1 text-sm text-laz-muted">
                                 Daftar seluruh kantong dana aktif beserta akumulasi mutasi masuk dan keluar.

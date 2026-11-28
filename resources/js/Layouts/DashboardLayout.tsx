@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     BookOpen,
+    Calendar,
     ChevronLeft,
     ChevronRight,
     ClipboardCheck,
@@ -130,71 +131,79 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
 
     const roleLabel = user ? ROLE_LABELS[user.peran] : '';
 
-    const renderNavItems = (isCollapsed: boolean, onNavigate?: () => void) => (
-        <div className="space-y-6">
-            {navGroups.map((group) => (
-                <div key={group.groupLabel}>
-                    {!isCollapsed && (
-                        <p className="px-3 mb-2 text-xs font-medium uppercase tracking-wider text-laz-gold/80 truncate">
-                            {group.groupLabel}
-                        </p>
-                    )}
-                    <div className="space-y-1.5">
-                        {group.items.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = item.href ? currentUrl.startsWith(item.href) && item.href !== '/' : false;
+    const renderNavItems = (isCollapsed: boolean, onNavigate?: () => void) => {
+        const pathname = currentUrl.split('?')[0];
 
-                            if (item.comingSoon || !item.href) {
-                                return (
-                                    <div
-                                        key={item.id}
-                                        aria-disabled="true"
-                                        title={`${item.label} (Segera hadir)`}
-                                        className={`flex items-center ${
-                                            isCollapsed ? 'justify-center px-2' : 'justify-between px-3'
-                                        } py-2.5 min-h-11 rounded-[var(--radius-button)] text-laz-cream/50 text-sm cursor-not-allowed`}
-                                    >
-                                        <span className="flex items-center gap-3 min-w-0">
-                                            <Icon className="w-4 h-4 shrink-0" aria-hidden={true} />
-                                            {!isCollapsed && <span className="truncate">{item.label}</span>}
-                                        </span>
-                                        {!isCollapsed && (
-                                            <span className="px-2 py-0.5 rounded-[var(--radius-badge)] border border-laz-gold/25 text-[10px] font-medium uppercase tracking-wider text-laz-gold/75 shrink-0">
-                                                Segera
+        return (
+            <div className="space-y-5">
+                {navGroups.map((group) => (
+                    <div key={group.groupLabel}>
+                        {!isCollapsed && (
+                            <p className="px-3 mb-2 text-[11px] font-medium uppercase tracking-wider text-laz-gold/80 truncate">
+                                {group.groupLabel}
+                            </p>
+                        )}
+                        <div className="space-y-1">
+                            {group.items.map((item) => {
+                                const Icon = item.icon;
+                                const isActive = item.href
+                                    ? item.href === '/dashboard' || item.href === '/penyaluran'
+                                        ? pathname === item.href
+                                        : pathname === item.href || pathname.startsWith(`${item.href}/`)
+                                    : false;
+
+                                if (item.comingSoon || !item.href) {
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            aria-disabled="true"
+                                            title={`${item.label} (Segera hadir)`}
+                                            className={`flex items-center ${
+                                                isCollapsed ? 'justify-center px-2' : 'justify-between px-3'
+                                            } py-2 min-h-9 rounded-[var(--radius-button)] text-laz-cream/50 text-sm cursor-not-allowed`}
+                                        >
+                                            <span className="flex items-center gap-3 min-w-0">
+                                                <Icon className="w-4 h-4 shrink-0" aria-hidden={true} />
+                                                {!isCollapsed && <span className="truncate">{item.label}</span>}
                                             </span>
-                                        )}
-                                    </div>
-                                );
-                            }
+                                            {!isCollapsed && (
+                                                <span className="px-2 py-0.5 rounded-[var(--radius-badge)] border border-laz-gold/25 text-[10px] font-medium uppercase tracking-wider text-laz-gold/75 shrink-0">
+                                                    Segera
+                                                </span>
+                                            )}
+                                        </div>
+                                    );
+                                }
 
-                            return (
-                                <Link
-                                    key={item.id}
-                                    href={item.href}
-                                    onClick={onNavigate}
-                                    aria-label={isCollapsed ? item.label : undefined}
-                                    title={isCollapsed ? item.label : undefined}
-                                    className={`flex items-center gap-3 ${
-                                        isCollapsed ? 'justify-center px-2' : 'px-3'
-                                    } py-2.5 min-h-11 rounded-[var(--radius-button)] text-sm font-medium transition-colors ${
-                                        isActive
-                                            ? 'bg-laz-forest-hover text-laz-surface border border-laz-gold/35'
-                                            : 'text-laz-cream/85 hover:bg-laz-forest-hover/70 hover:text-laz-surface'
-                                    }`}
-                                >
-                                    <Icon
-                                        className={`w-4 h-4 shrink-0 ${isActive ? 'text-laz-gold' : 'text-laz-cream/75'}`}
-                                        aria-hidden={true}
-                                    />
-                                    {!isCollapsed && <span className="truncate">{item.label}</span>}
-                                </Link>
-                            );
-                        })}
+                                return (
+                                    <Link
+                                        key={item.id}
+                                        href={item.href}
+                                        onClick={onNavigate}
+                                        aria-label={isCollapsed ? item.label : undefined}
+                                        title={isCollapsed ? item.label : undefined}
+                                        className={`flex items-center gap-3 ${
+                                            isCollapsed ? 'justify-center px-2' : 'px-3'
+                                        } py-2 min-h-9 rounded-[var(--radius-button)] text-sm font-medium transition-colors ${
+                                            isActive
+                                                ? 'bg-laz-forest-hover text-laz-surface border border-laz-gold/35'
+                                                : 'text-laz-cream/85 hover:bg-laz-forest-hover/70 hover:text-laz-surface'
+                                        }`}
+                                    >
+                                        <Icon
+                                            className={`w-4 h-4 shrink-0 ${isActive ? 'text-laz-gold' : 'text-laz-cream/75'}`}
+                                            aria-hidden={true}
+                                        />
+                                        {!isCollapsed && <span className="truncate">{item.label}</span>}
+                                    </Link>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
-            ))}
-        </div>
-    );
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div className="min-h-screen bg-laz-cream text-laz-forest flex">
@@ -203,17 +212,17 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
             {/* Desktop Sidebar */}
             <aside
                 aria-label="Navigasi Operasional"
-                className={`hidden lg:flex lg:flex-col bg-laz-forest text-laz-cream shrink-0 border-r border-laz-gold/20 transition-[width] duration-200 ${
+                className={`hidden lg:flex lg:flex-col lg:sticky lg:top-0 lg:h-screen bg-laz-forest text-laz-cream shrink-0 border-r border-laz-gold/20 transition-[width] duration-200 ${
                     collapsed ? 'lg:w-20' : 'lg:w-72'
                 }`}
             >
-                <div className="px-4 py-5 border-b border-laz-gold/20 flex items-center justify-between gap-2">
+                <div className="px-4 py-3.5 border-b border-laz-gold/20 flex items-center justify-between gap-2">
                     {!collapsed && (
                         <div className="flex items-center gap-3 min-w-0">
                             <img
                                 src="/images/logo-laz.png"
                                 alt="Logo LAZ Amanah Madani"
-                                className="h-12 w-12 rounded-xl bg-laz-cream p-1 object-contain shrink-0"
+                                className="h-11 w-11 object-contain shrink-0"
                             />
                             <div className="min-w-0">
                                 <p className="text-xs font-medium tracking-wider uppercase text-laz-gold truncate">
@@ -241,22 +250,12 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                     </button>
                 </div>
 
-                <nav className="flex-1 px-3 py-6 overflow-y-auto" aria-label="Menu Utama">
+                <nav className="flex-1 px-3 pt-5 pb-4 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Menu Utama">
                     {renderNavItems(collapsed)}
                 </nav>
 
                 {user && (
-                    <div className="p-3 border-t border-laz-gold/20 space-y-3">
-                        {!collapsed && (
-                            <div className="px-3 py-2.5 rounded-[var(--radius-button)] bg-laz-forest-hover/80 border border-laz-gold/20">
-                                <p className="text-sm font-semibold text-laz-surface truncate">
-                                    {user.nama_lengkap}
-                                </p>
-                                <p className="text-xs text-laz-gold mt-0.5 truncate">{roleLabel}</p>
-                                <p className="text-xs text-laz-cream/70 mt-0.5 truncate">{user.jabatan}</p>
-                            </div>
-                        )}
-
+                    <div className="p-3 border-t border-laz-gold/20">
                         <button
                             type="button"
                             onClick={handleLogout}
@@ -288,7 +287,7 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                                 <img
                                     src="/images/logo-laz.png"
                                     alt="Logo LAZ Amanah Madani"
-                                    className="h-11 w-11 rounded-xl bg-laz-cream p-1 object-contain shrink-0"
+                                    className="h-11 w-11 object-contain shrink-0"
                                 />
                                 <div className="min-w-0">
                                     <p className="text-xs font-medium uppercase tracking-wider text-laz-gold truncate">
@@ -340,7 +339,7 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
 
             {/* Main Content Column */}
             <div className="flex-1 flex flex-col min-w-0">
-                <header className="bg-laz-surface border-b border-laz-gold/30 px-4 sm:px-8 py-4 flex items-center justify-between gap-4">
+                <header className="sticky top-0 z-30 bg-laz-surface/95 backdrop-blur-xs border-b border-laz-gold/30 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                         <button
                             ref={menuButtonRef}
@@ -358,9 +357,45 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                     </div>
 
                     {user && (
-                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius-badge)] bg-laz-cream border border-laz-gold/40 text-xs font-medium text-laz-forest">
-                            <ShieldCheck className="w-3.5 h-3.5 text-laz-sage" aria-hidden="true" />
-                            <span>{roleLabel}</span>
+                        <div className="flex items-center gap-3 shrink-0">
+                            <span className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-laz-muted">
+                                <Calendar className="w-3.5 h-3.5 text-laz-sage" aria-hidden="true" />
+                                <span>
+                                    {new Intl.DateTimeFormat('id-ID', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric',
+                                    }).format(new Date())}
+                                </span>
+                            </span>
+
+                            <span className="hidden xl:block h-5 w-px bg-laz-gold/35" aria-hidden="true" />
+
+                            <Link
+                                href="/dashboard/panduan"
+                                aria-label="Panduan Sistem"
+                                title="Panduan Sistem"
+                                className="inline-flex h-10 items-center gap-1.5 px-3 rounded-[var(--radius-button)] border border-laz-gold/40 bg-laz-cream/60 hover:bg-laz-cream text-xs font-semibold text-laz-forest transition-colors"
+                            >
+                                <HelpCircle className="w-4 h-4 text-laz-sage" aria-hidden="true" />
+                                <span className="hidden md:inline">Panduan</span>
+                            </Link>
+
+                            <span className="hidden sm:block h-6 w-px bg-laz-gold/35" aria-hidden="true" />
+
+                            <div className="hidden sm:flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-laz-forest text-laz-gold flex items-center justify-center shrink-0">
+                                    <ShieldCheck className="w-4 h-4" aria-hidden="true" />
+                                </div>
+                                <div className="leading-tight text-left">
+                                    <p className="text-xs font-bold text-laz-forest">
+                                        {user.nama_lengkap}
+                                    </p>
+                                    <p className="mt-0.5 text-[11px] text-laz-muted">
+                                        {user.jabatan}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </header>
