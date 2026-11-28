@@ -1,4 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import {
     BookOpen,
     Calendar,
@@ -400,9 +401,14 @@ export default function DashboardLayout({ title, children }: DashboardLayoutProp
                     )}
                 </header>
 
-                <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
+                <motion.main
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto"
+                >
                     {children}
-                </main>
+                </motion.main>
             </div>
         </div>
     );

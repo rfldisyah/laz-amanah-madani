@@ -1,7 +1,9 @@
+import { useGSAP } from '@gsap/react';
 import { usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
 import { ShieldAlert, ShieldCheck } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { formatRupiah, formatTanggalId, KATEGORI_INDUK_LABELS } from '@/lib/formatters';
 import type {
@@ -12,6 +14,8 @@ import type {
     RingkasanOperasional,
     SharedPageProps,
 } from '@/types/database';
+
+gsap.registerPlugin(useGSAP);
 
 interface DashboardIndexProps {
     rekapDana: RekapIndukDana[];
@@ -37,7 +41,35 @@ export default function DashboardIndex({
 }: DashboardIndexProps) {
     const { auth } = usePage<SharedPageProps>().props;
     const user = auth.user;
+    const containerRef = useRef<HTMLDivElement>(null);
     const [kategoriFilter, setKategoriFilter] = useState<KategoriFilter>('SEMUA');
+
+    useGSAP(
+        () => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            gsap.from('.gsap-dash-card', {
+                y: 14,
+                opacity: 0,
+                duration: 0.45,
+                stagger: 0.06,
+                ease: 'power2.out',
+                clearProps: 'transform,opacity',
+            });
+
+            gsap.from('.gsap-amil-bar', {
+                scaleX: 0,
+                transformOrigin: 'left center',
+                duration: 0.7,
+                delay: 0.2,
+                ease: 'power2.out',
+                clearProps: 'transform',
+            });
+        },
+        { scope: containerRef },
+    );
 
     const filteredKantong = useMemo(() => {
         if (kategoriFilter === 'SEMUA') {
@@ -58,13 +90,13 @@ export default function DashboardIndex({
 
     return (
         <DashboardLayout title="Dashboard">
-            <div className="space-y-8">
+            <div ref={containerRef} className="space-y-8">
                 {/* Identitas Staf & Antrian Operasional Nyata */}
                 <section
                     aria-labelledby="executive-header"
                     className="grid grid-cols-1 lg:grid-cols-12 gap-6"
                 >
-                    <div className="lg:col-span-5 bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-4">
+                    <div className="gsap-dash-card lg:col-span-5 bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-4">
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-wider text-laz-sage">
                                 Sesi Operasional Aktif
@@ -100,7 +132,7 @@ export default function DashboardIndex({
                     </div>
 
                     {/* Indikator Kuota Hak Amil 12.5% */}
-                    <div className="lg:col-span-7 bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-5">
+                    <div className="gsap-dash-card lg:col-span-7 bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 flex flex-col justify-between gap-5">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wider text-laz-muted">
@@ -154,7 +186,7 @@ export default function DashboardIndex({
                                 className="h-3 w-full rounded-full bg-laz-cream border border-laz-gold/30 overflow-hidden"
                             >
                                 <div
-                                    className={`h-full rounded-full transition-all duration-500 ${
+                                    className={`gsap-amil-bar h-full rounded-full transition-all duration-500 ${
                                         amilStatus === 'MELEBIHI'
                                             ? 'bg-laz-danger'
                                             : amilStatus === 'MENDEKATI'
@@ -201,9 +233,11 @@ export default function DashboardIndex({
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {rekapDana.map((item) => (
-                                <article
+                                <motion.article
                                     key={item.kategori_induk}
-                                    className="bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 space-y-4"
+                                    whileHover={{ y: -2 }}
+                                    transition={{ duration: 0.18 }}
+                                    className="gsap-dash-card bg-laz-surface rounded-[var(--radius-card)] border border-laz-gold/35 p-6 space-y-4"
                                 >
                                     <div className="flex items-center justify-between gap-2">
                                         <h4 className="text-sm font-bold text-laz-forest">
@@ -235,7 +269,7 @@ export default function DashboardIndex({
                                             </dd>
                                         </div>
                                     </dl>
-                                </article>
+                                </motion.article>
                             ))}
                         </div>
                     )}
@@ -307,8 +341,11 @@ export default function DashboardIndex({
                                 </thead>
                                 <tbody className="divide-y divide-laz-gold/20">
                                     {filteredKantong.map((row) => (
-                                        <tr
+                                        <motion.tr
                                             key={row.id_saldo}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.18 }}
                                             className="hover:bg-laz-cream/50 transition-colors"
                                         >
                                             <td className="py-4 px-5 min-w-[220px]">
@@ -339,7 +376,7 @@ export default function DashboardIndex({
                                             <td className="py-4 px-5 whitespace-nowrap text-right text-xs text-laz-muted">
                                                 {formatTanggalId(row.updated_at)}
                                             </td>
-                                        </tr>
+                                        </motion.tr>
                                     ))}
                                 </tbody>
                             </table>
